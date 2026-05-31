@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 """
-accounts/views.py
+account/views.py
 
 Les vues sont les "guichets" de notre API.
 Analogie : Dans une mairie, chaque guichet gère un type de demande —
@@ -74,8 +74,8 @@ class RegisterView(generics.CreateAPIView):
 
 class MeView(APIView):
     """
-    GET  /api/accounts/me/  → renvoie les infos de l'utilisateur connecté
-    PUT  /api/accounts/me/  → met à jour prénom / nom
+    GET  /api/account/me/  → renvoie les infos de l'utilisateur connecté
+    PUT  /api/account/me/  → met à jour prénom / nom
     """
     permission_classes = [IsAuthenticated]
 
@@ -92,7 +92,7 @@ class MeView(APIView):
 
 class ChangePasswordView(APIView):
     """
-    POST /api/accounts/change-password/
+    POST /api/account/change-password/
     L'utilisateur doit fournir son ancien mot de passe pour en définir un nouveau.
     """
     permission_classes = [IsAuthenticated]
@@ -110,8 +110,8 @@ class ChangePasswordView(APIView):
 
 class CandidateProfileView(APIView):
     """
-    GET  /api/accounts/profile/candidate/  → lire son profil
-    PUT  /api/accounts/profile/candidate/  → mettre à jour son profil
+    GET  /api/account/profile/candidate/  → lire son profil
+    PUT  /api/account/profile/candidate/  → mettre à jour son profil
 
     Seul un candidat peut accéder à cette vue (IsCandidate).
     """
@@ -141,8 +141,8 @@ class CandidateProfileView(APIView):
 
 class RecruiterProfileView(APIView):
     """
-    GET  /api/accounts/profile/recruiter/  → lire son profil
-    PUT  /api/accounts/profile/recruiter/  → mettre à jour son profil
+    GET  /api/account/profile/recruiter/  → lire son profil
+    PUT  /api/account/profile/recruiter/  → mettre à jour son profil
     """
     permission_classes = [IsAuthenticated, IsRecruiter]
 
@@ -169,7 +169,7 @@ class RecruiterProfileView(APIView):
 
 class AdminUserListView(generics.ListAPIView):
     """
-    GET /api/accounts/admin/users/
+    GET /api/account/admin/users/
     Liste tous les utilisateurs — réservé aux admins.
     """
     queryset = User.objects.all().order_by("-created_at")
@@ -179,8 +179,8 @@ class AdminUserListView(generics.ListAPIView):
 
 class AdminUserDetailView(generics.RetrieveUpdateAPIView):
     """
-    GET   /api/accounts/admin/users/<id>/  → voir un utilisateur
-    PATCH /api/accounts/admin/users/<id>/  → modifier (ex: désactiver)
+    GET   /api/account/admin/users/<id>/  → voir un utilisateur
+    PATCH /api/account/admin/users/<id>/  → modifier (ex: désactiver)
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer

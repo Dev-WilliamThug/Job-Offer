@@ -1,5 +1,5 @@
 """
-accounts/permissions.py
+account/permissions.py
 
 Les permissions sont les "videurs" de l'application.
 Analogie : Imagine une boîte de nuit avec plusieurs zones. Le videur

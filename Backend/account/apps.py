@@ -1,5 +1,5 @@
 """
-accounts/apps.py
+account/apps.py
 
 La configuration de l'application.
 Ici on enregistre les signals pour qu'ils soient actifs au démarrage.
@@ -8,9 +8,9 @@ Ici on enregistre les signals pour qu'ils soient actifs au démarrage.
 from django.apps import AppConfig
 
 
-class AccountsConfig(AppConfig):
+class accountConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "accounts"
+    name = "account"
     verbose_name = "Gestion des comptes"
 
     def ready(self):
@@ -19,4 +19,4 @@ class AccountsConfig(AppConfig):
         C'est le bon endroit pour importer les signals.
         Sans ça, les signals ne seraient jamais connectés.
         """
-        import accounts.signals  # noqa: F401
+        import account.signals  # noqa: F401

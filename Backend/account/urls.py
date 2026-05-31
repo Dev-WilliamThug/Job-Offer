@@ -1,5 +1,5 @@
 """
-accounts/urls.py
+account/urls.py
 
 Le fichier d'URLs est le "plan du quartier" : il indique à Django
 quelle vue appeler selon l'adresse demandée.
@@ -23,7 +23,7 @@ from .views import (
     RegisterView,
 )
 
-app_name = "accounts"
+app_name = "account"
 
 urlpatterns = [
     # ── Authentification ──────────────────────────────

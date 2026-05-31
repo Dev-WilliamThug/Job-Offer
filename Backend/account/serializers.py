@@ -1,5 +1,5 @@
 """
-accounts/serializers.py
+account/serializers.py
 
 Les serializers sont les "traducteurs" entre Python et JSON.
 Analogie : Imagine un douanier à la frontière. Quand des données entrent
