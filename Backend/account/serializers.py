@@ -28,6 +28,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     supplémentaire pour savoir qui est connecté.
     """
 
+    username_field = User.USERNAME_FIELD
+
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
@@ -59,17 +61,14 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["email", "first_name", "last_name", "role", "password", "password_confirm"]
-
-    def validate_role(self, value):
-        """Un utilisateur ne peut pas s'inscrire en tant qu'admin."""
-        if value == UserRole.ADMIN:
+        
+    def validate(self, attrs):
+        """Validation croisée : on vérifie que le rôle est valide et que les mots de passe correspondent."""
+        role = attrs.get("role", UserRole.CANDIDATE)
+        if role == UserRole.ADMIN:
             raise serializers.ValidationError(
-                "Vous ne pouvez pas vous inscrire en tant qu'administrateur."
+                {"role": "Vous ne pouvez pas vous inscrire en tant qu'administrateur."}
             )
-        return value
-
-    def validate_password(self, attrs):
-        """Vérifie que les deux mots de passe correspondent."""
         if attrs["password"] != attrs["password_confirm"]:
             raise serializers.ValidationError({"password": "Les mots de passe ne correspondent pas."})
         return attrs
@@ -81,14 +80,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         # Création de l'utilisateur
         user = User.objects.create_user(**validated_data)
 
-        # Création automatique du profil selon le rôle
-        # Analogie : quand tu ouvres un compte bancaire, la banque crée
-        # automatiquement ton livret — tu n'as pas à le demander.
-        if role == UserRole.CANDIDATE:
-            CandidateProfile.objects.create(user=user)
-        elif role == UserRole.RECRUITER:
-            RecruiterProfile.objects.create(user=user)
-
+        #le signal s'exécute automatiquement après et créé le profile correspondant
         return user
 
 

@@ -10,7 +10,7 @@ Analogie : Ces vues sont les guichets d'un registre du commerce.
 
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -88,7 +88,7 @@ class CompanyCreateView(generics.CreateAPIView):
     Statut initial : PENDING (validation admin requise).
     """
     serializer_class = CompanyCreateSerializer
-    permission_classes = [IsAuthenticated, IsRecruiter]
+    permission_classes = [IsRecruiter]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -110,7 +110,7 @@ class CompanyUpdateView(generics.UpdateAPIView):
     Seul le créateur ou un admin peut modifier (IsCompanyOwnerOrAdmin).
     """
     serializer_class = CompanyUpdateSerializer
-    permission_classes = [IsAuthenticated, IsCompanyOwnerOrAdmin]
+    permission_classes = [IsCompanyOwnerOrAdmin]
     lookup_field = "slug"
     queryset = Company.objects.all()
 
@@ -129,7 +129,7 @@ class CompanyDeleteView(generics.DestroyAPIView):
     Supprime une entreprise.
     Réservé au créateur ou à l'admin.
     """
-    permission_classes = [IsAuthenticated, IsCompanyOwnerOrAdmin]
+    permission_classes = [IsCompanyOwnerOrAdmin]
     lookup_field = "slug"
     queryset = Company.objects.all()
 
@@ -148,7 +148,7 @@ class MyCompaniesView(generics.ListAPIView):
     Renvoie toutes les entreprises créées par le recruteur connecté.
     """
     serializer_class = CompanyListSerializer
-    permission_classes = [IsAuthenticated, IsRecruiter]
+    permission_classes = [IsRecruiter]
 
     def get_queryset(self):
         return Company.objects.filter(created_by=self.request.user)
@@ -165,7 +165,7 @@ class FollowCompanyView(APIView):
 
     Seuls les candidats peuvent suivre une entreprise.
     """
-    permission_classes = [IsAuthenticated, IsCandidate]
+    permission_classes = [IsCandidate]
 
     def post(self, request, slug):
         company = get_object_or_404(Company, slug=slug, status=CompanyStatus.ACTIVE)
@@ -204,7 +204,7 @@ class MyFollowedCompaniesView(generics.ListAPIView):
     Retourne la liste des entreprises suivies par le candidat connecté.
     """
     serializer_class = CompanyFollowerSerializer
-    permission_classes = [IsAuthenticated, IsCandidate]
+    permission_classes = [IsCandidate]
 
     def get_queryset(self):
         return CompanyFollower.objects.filter(user=self.request.user).select_related("company")
@@ -220,7 +220,7 @@ class AdminCompanyListView(generics.ListAPIView):
     Liste toutes les entreprises (tous statuts) — admin seulement.
     """
     serializer_class = CompanyDetailSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    permission_classes = [IsAdminUser]
 
     def get_queryset(self):
         qs = Company.objects.all().select_related("created_by")
@@ -242,7 +242,7 @@ class AdminCompanyStatusView(APIView):
     Analogie : le tampon officiel du greffier du tribunal de commerce
     qui valide ou rejette l'immatriculation.
     """
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    permission_classes = [IsAdminUser]
 
     def patch(self, request, pk):
         company = get_object_or_404(Company, pk=pk)

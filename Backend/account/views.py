@@ -18,7 +18,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
-
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import CandidateProfile, RecruiterProfile, UserRole
 from .permissions import IsAdminUser, IsCandidate, IsOwnerOrAdmin, IsRecruiter
 from .serializers import (
@@ -77,6 +77,7 @@ class MeView(APIView):
     GET  /api/account/me/  → renvoie les infos de l'utilisateur connecté
     PUT  /api/account/me/  → met à jour prénom / nom
     """
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -115,7 +116,7 @@ class CandidateProfileView(APIView):
 
     Seul un candidat peut accéder à cette vue (IsCandidate).
     """
-    permission_classes = [IsAuthenticated, IsCandidate]
+    permission_classes = [IsCandidate]
 
     def _get_profile(self, user):
         """Récupère ou crée le profil candidat (sécurité si création manquée)."""
@@ -144,7 +145,7 @@ class RecruiterProfileView(APIView):
     GET  /api/account/profile/recruiter/  → lire son profil
     PUT  /api/account/profile/recruiter/  → mettre à jour son profil
     """
-    permission_classes = [IsAuthenticated, IsRecruiter]
+    permission_classes = [IsRecruiter]
 
     def _get_profile(self, user):
         profile, _ = RecruiterProfile.objects.get_or_create(user=user)
@@ -174,7 +175,7 @@ class AdminUserListView(generics.ListAPIView):
     """
     queryset = User.objects.all().order_by("-created_at")
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    permission_classes = [IsAdminUser]
 
 
 class AdminUserDetailView(generics.RetrieveUpdateAPIView):
@@ -184,7 +185,7 @@ class AdminUserDetailView(generics.RetrieveUpdateAPIView):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    permission_classes = [IsAdminUser]
 
     def get_serializer_class(self):
         if self.request.method in ["PUT", "PATCH"]:

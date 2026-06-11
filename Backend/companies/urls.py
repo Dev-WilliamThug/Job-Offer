@@ -28,13 +28,13 @@ app_name = "companies"
 urlpatterns = [
     # ── Lecture publique ──────────────────────────────
     path("", CompanyListView.as_view(), name="company_list"),
-    path("<slug:slug>/", CompanyDetailView.as_view(), name="company_detail"),
 
     # ── Actions recruteur ─────────────────────────────
     path("create/", CompanyCreateView.as_view(), name="company_create"),
-    path("<slug:slug>/edit/", CompanyUpdateView.as_view(), name="company_update"),
-    path("<slug:slug>/delete/", CompanyDeleteView.as_view(), name="company_delete"),
     path("mine/", MyCompaniesView.as_view(), name="my_companies"),
+    path("<slug:slug>/edit/", CompanyUpdateView.as_view(), name="company_update"),
+    path("<slug:slug>/", CompanyDetailView.as_view(), name="company_detail"),
+    path("<slug:slug>/delete/", CompanyDeleteView.as_view(), name="company_delete"),# ── Lecture publique ──────────────────────────────
 
     # ── Suivi (candidats) ─────────────────────────────
     path("<slug:slug>/follow/", FollowCompanyView.as_view(), name="follow_company"),

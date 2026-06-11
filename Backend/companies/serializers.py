@@ -44,13 +44,19 @@ class CompanyCreateSerializer(serializers.ModelSerializer):
         """
         Le créateur est injecté depuis la vue (request.user).
         Le statut est forcé à PENDING — l'admin devra valider.
+        Lie automatiquement l'entreprise au profil recruteur.
         """
         request = self.context["request"]
-        return Company.objects.create(
+        company = Company.objects.create(
             **validated_data,
             created_by=request.user,
             status=CompanyStatus.PENDING,
         )
+        if hasattr(request.user, "recruiter_profile"):
+            profile = request.user.recruiter_profile
+            profile.company = company
+            profile.save(update_fields=["company"])
+        return company
 
 
 class CompanyUpdateSerializer(serializers.ModelSerializer):
@@ -75,7 +81,7 @@ class CompanyListSerializer(serializers.ModelSerializer):
     On évite de charger la description complète ou les recruteurs.
     """
 
-    job_count = serializers.IntegerField(source="job_count", read_only=True)
+    job_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Company
@@ -92,8 +98,8 @@ class CompanyDetailSerializer(serializers.ModelSerializer):
     """
 
     created_by = UserSerializer(read_only=True)
-    job_count = serializers.IntegerField(source="job_count", read_only=True)
-    recruiter_count = serializers.IntegerField(source="recruiter_count", read_only=True)
+    job_count = serializers.IntegerField(read_only=True)
+    recruiter_count = serializers.IntegerField(read_only=True)
     is_followed = serializers.SerializerMethodField()
 
     class Meta:
