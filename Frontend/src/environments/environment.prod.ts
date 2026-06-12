@@ -6,6 +6,6 @@
  */
 export const environment = {
   production: true,
-  apiUrl: 'https://VOTRE-BACKEND.onrender.com/api',
-  mediaUrl: 'https://VOTRE-BACKEND.onrender.com',
+  apiUrl: 'https://job-offer-1.onrender.com/api',
+  mediaUrl: 'https://job-offer-1.onrender.com',
 };
