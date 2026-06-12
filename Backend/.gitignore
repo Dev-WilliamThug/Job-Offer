@@ -2,10 +2,6 @@
 *.pyc
 __pycache__/
 
-# Environnement virtuel (si présent dans votre dossier de projet)
-venv/
-.venv/
-env/
 
 # Base de données locale (SQLite)
 *.sqlite3
