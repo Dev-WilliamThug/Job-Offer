@@ -13,3 +13,5 @@ env/
 # Fichiers de configuration de l'éditeur
 .vscode/
 .idea/
+
+../Frontend/
