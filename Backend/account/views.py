@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 """
-accounts/views.py
+account/views.py
 
 Les vues sont les "guichets" de notre API.
 Analogie : Dans une mairie, chaque guichet gère un type de demande —
@@ -18,7 +18,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
-
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import CandidateProfile, RecruiterProfile, UserRole
 from .permissions import IsAdminUser, IsCandidate, IsOwnerOrAdmin, IsRecruiter
 from .serializers import (
@@ -74,9 +74,10 @@ class RegisterView(generics.CreateAPIView):
 
 class MeView(APIView):
     """
-    GET  /api/accounts/me/  → renvoie les infos de l'utilisateur connecté
-    PUT  /api/accounts/me/  → met à jour prénom / nom
+    GET  /api/account/me/  → renvoie les infos de l'utilisateur connecté
+    PUT  /api/account/me/  → met à jour prénom / nom
     """
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -92,7 +93,7 @@ class MeView(APIView):
 
 class ChangePasswordView(APIView):
     """
-    POST /api/accounts/change-password/
+    POST /api/account/change-password/
     L'utilisateur doit fournir son ancien mot de passe pour en définir un nouveau.
     """
     permission_classes = [IsAuthenticated]
@@ -110,12 +111,12 @@ class ChangePasswordView(APIView):
 
 class CandidateProfileView(APIView):
     """
-    GET  /api/accounts/profile/candidate/  → lire son profil
-    PUT  /api/accounts/profile/candidate/  → mettre à jour son profil
+    GET  /api/account/profile/candidate/  → lire son profil
+    PUT  /api/account/profile/candidate/  → mettre à jour son profil
 
     Seul un candidat peut accéder à cette vue (IsCandidate).
     """
-    permission_classes = [IsAuthenticated, IsCandidate]
+    permission_classes = [IsCandidate]
 
     def _get_profile(self, user):
         """Récupère ou crée le profil candidat (sécurité si création manquée)."""
@@ -141,10 +142,10 @@ class CandidateProfileView(APIView):
 
 class RecruiterProfileView(APIView):
     """
-    GET  /api/accounts/profile/recruiter/  → lire son profil
-    PUT  /api/accounts/profile/recruiter/  → mettre à jour son profil
+    GET  /api/account/profile/recruiter/  → lire son profil
+    PUT  /api/account/profile/recruiter/  → mettre à jour son profil
     """
-    permission_classes = [IsAuthenticated, IsRecruiter]
+    permission_classes = [IsRecruiter]
 
     def _get_profile(self, user):
         profile, _ = RecruiterProfile.objects.get_or_create(user=user)
@@ -169,22 +170,22 @@ class RecruiterProfileView(APIView):
 
 class AdminUserListView(generics.ListAPIView):
     """
-    GET /api/accounts/admin/users/
+    GET /api/account/admin/users/
     Liste tous les utilisateurs — réservé aux admins.
     """
     queryset = User.objects.all().order_by("-created_at")
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    permission_classes = [IsAdminUser]
 
 
 class AdminUserDetailView(generics.RetrieveUpdateAPIView):
     """
-    GET   /api/accounts/admin/users/<id>/  → voir un utilisateur
-    PATCH /api/accounts/admin/users/<id>/  → modifier (ex: désactiver)
+    GET   /api/account/admin/users/<id>/  → voir un utilisateur
+    PATCH /api/account/admin/users/<id>/  → modifier (ex: désactiver)
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    permission_classes = [IsAdminUser]
 
     def get_serializer_class(self):
         if self.request.method in ["PUT", "PATCH"]:

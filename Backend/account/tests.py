@@ -1,5 +1,5 @@
 """
-accounts/tests.py
+account/tests.py
 
 Les tests sont le "banc d'essai" avant de mettre en production.
 Analogie : Avant de lancer une voiture sur la route, on la teste
@@ -30,7 +30,7 @@ class RegisterTests(APITestCase):
     """Tests de l'inscription."""
 
     def setUp(self):
-        self.url = reverse("accounts:register")
+        self.url = reverse("account:register")
 
     def test_register_candidate_success(self):
         data = {
@@ -99,7 +99,7 @@ class LoginTests(APITestCase):
     """Tests de la connexion JWT."""
 
     def setUp(self):
-        self.url = reverse("accounts:login")
+        self.url = reverse("account:login")
         self.user = User.objects.create_user(
             email="user@test.com", password="StrongPass123!", role=UserRole.CANDIDATE
         )
@@ -127,7 +127,7 @@ class MeViewTests(APITestCase):
         )
         token = get_tokens_for_user(self.user)
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
-        self.url = reverse("accounts:me")
+        self.url = reverse("account:me")
 
     def test_get_me_returns_user_data(self):
         response = self.client.get(self.url)
@@ -157,12 +157,12 @@ class PermissionTests(APITestCase):
 
     def test_candidate_cannot_access_recruiter_profile_endpoint(self):
         self._auth(self.candidate)
-        url = reverse("accounts:recruiter_profile")
+        url = reverse("account:recruiter_profile")
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_recruiter_cannot_access_candidate_profile_endpoint(self):
         self._auth(self.recruiter)
-        url = reverse("accounts:candidate_profile")
+        url = reverse("account:candidate_profile")
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

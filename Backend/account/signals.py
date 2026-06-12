@@ -1,5 +1,5 @@
 """
-accounts/signals.py
+account/signals.py
 
 Les signals Django sont un système d'événements.
 Analogie : C'est comme des alertes automatiques dans un hôpital.

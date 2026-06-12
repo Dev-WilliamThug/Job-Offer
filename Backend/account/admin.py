@@ -1,5 +1,5 @@
 """
-accounts/admin.py
+account/admin.py
 
 Configuration de l'interface d'administration Django.
 Analogie : C'est le tableau de bord du gestionnaire d'immeuble —
