@@ -33,7 +33,6 @@ import { RouterLink } from '@angular/router';
       </div>
       <div class="footer-bottom container">
         <span>© {{ year }} JobOffer. Tous droits réservés.</span>
-        <span class="text-muted">Conçu avec Angular · Bleu · Blanc · Orange</span>
       </div>
     </footer>
   `,
